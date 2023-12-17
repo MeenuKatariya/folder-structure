@@ -62,9 +62,17 @@ function FolderStructure() {
       keyPath.reduce((o, k) => o[k] || {}, stackData)[fileOrFolderName] =
         typeof objKeyValue === "string" ? fileOrFolderName : objKeyValue;
       delete keyPath.reduce((o, k) => o[k] || {}, stackData)[last];
+      setSelectedAddIcon("");
     } else {
-      keyPath.reduce((o, k) => o[k] || {}, stackData)[fileOrFolderName] =
-        selectedAddIcon === "file" ? fileOrFolderName : {};
+      const objPath = keyPath.reduce((o, k) => o[k] || {}, stackData);
+      console.log({ objPath });
+      if (objPath.size) {
+        objPath[fileOrFolderName] =
+          selectedAddIcon === "file" ? fileOrFolderName : {};
+      } else {
+        stackData[fileOrFolderName] =
+          selectedAddIcon === "file" ? fileOrFolderName : {};
+      }
     }
     setStack(stackData);
     onClose();
@@ -135,7 +143,7 @@ function FolderStructure() {
                       onOpen();
                     }}
                   >
-                    <FaPlus style={{marginRight: 3}}/> <FaFile />
+                    <FaPlus style={{ marginRight: 3 }} /> <FaFile />
                   </Button>
                   <Button
                     colorScheme="gray"
@@ -147,7 +155,7 @@ function FolderStructure() {
                       onOpen();
                     }}
                   >
-                    <FaPlus style={{marginRight: 3}}/> <FaFolder />
+                    <FaPlus style={{ marginRight: 3 }} /> <FaFolder />
                   </Button>
                 </div>
                 <div>{getStructure(itemData, parentKey)}</div>
@@ -188,7 +196,7 @@ function FolderStructure() {
                   onOpen();
                 }}
               >
-                <FaPencilAlt size={10}/>
+                <FaPencilAlt size={10} />
               </Button>
               <Button
                 colorScheme="gray"
@@ -230,7 +238,7 @@ function FolderStructure() {
             onOpen();
           }}
         >
-          <FaPlus style={{marginRight: 3}}/> <FaFile />
+          <FaPlus style={{ marginRight: 3 }} /> <FaFile />
         </Button>
         <Button
           colorScheme="gray"
@@ -242,7 +250,7 @@ function FolderStructure() {
             onOpen();
           }}
         >
-         <FaPlus style={{marginRight: 3}}/> <FaFolder />
+          <FaPlus style={{ marginRight: 3 }} /> <FaFolder />
         </Button>
       </div>
       <div>
