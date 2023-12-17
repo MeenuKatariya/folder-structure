@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CiFolderOn, CiFileOn } from "react-icons/ci";
-import AddModal from "./AddModal";
+import AddOrEditModal from "./AddOrEditModal";
 import { FaPencilAlt } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { Button, useDisclosure } from "@chakra-ui/react";
@@ -35,8 +35,8 @@ function FolderStructure() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [stack, setStack] = useState({});
   const [reRenderKey, setReRenderKey] = useState();
-  const [selectedAddIcon, setSelectedAddIcon] = useState("");
-  const [addParentKey, setAddParentKey] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState("");
+  const [addOrEditParentKey, setAddOrEditParentKey] = useState("");
   const [editPlaceholder, setEditPlaceholder] = useState("");
 
   useEffect(() => {
@@ -53,29 +53,29 @@ function FolderStructure() {
     setReRenderKey(Date.now());
   };
 
-  const handleAddFolderOrFile = (fileOrFolderName) => {
+  const handleAddAndEditFolderOrFile = (fileOrFolderName) => {
     const stackData = stack;
-    const keyPath = addParentKey.split("_");
-    if (selectedAddIcon === "edit") {
+    const keyPath = addOrEditParentKey.split("_");
+    if (selectedIcon === "edit") {
       const objKeyValue = keyPath.reduce((o, k) => o[k] || {}, stackData);
       const last = keyPath.pop();
       keyPath.reduce((o, k) => o[k] || {}, stackData)[fileOrFolderName] =
         typeof objKeyValue === "string" ? fileOrFolderName : objKeyValue;
       delete keyPath.reduce((o, k) => o[k] || {}, stackData)[last];
-      setSelectedAddIcon("");
     } else {
       const objPath = keyPath.reduce((o, k) => o[k] || {}, stackData);
       console.log({ objPath });
       if (objPath.size) {
         objPath[fileOrFolderName] =
-          selectedAddIcon === "file" ? fileOrFolderName : {};
+          selectedIcon === "file" ? fileOrFolderName : {};
       } else {
         stackData[fileOrFolderName] =
-          selectedAddIcon === "file" ? fileOrFolderName : {};
+          selectedIcon === "file" ? fileOrFolderName : {};
       }
     }
     setStack(stackData);
     onClose();
+    setSelectedIcon("");
     setReRenderKey(Date.now());
   };
 
@@ -117,8 +117,8 @@ function FolderStructure() {
                     size="xs"
                     onClick={() => {
                       setEditPlaceholder(item);
-                      setAddParentKey(parentKey);
-                      setSelectedAddIcon("edit");
+                      setAddOrEditParentKey(parentKey);
+                      setSelectedIcon("edit");
                       onOpen();
                     }}
                   >
@@ -138,8 +138,8 @@ function FolderStructure() {
                     colorScheme="gray"
                     size="xs"
                     onClick={() => {
-                      setAddParentKey(parentKey);
-                      setSelectedAddIcon("file");
+                      setAddOrEditParentKey(parentKey);
+                      setSelectedIcon("file");
                       onOpen();
                     }}
                   >
@@ -150,8 +150,8 @@ function FolderStructure() {
                     size="xs"
                     ml={1}
                     onClick={() => {
-                      setAddParentKey(parentKey);
-                      setSelectedAddIcon("folder");
+                      setAddOrEditParentKey(parentKey);
+                      setSelectedIcon("folder");
                       onOpen();
                     }}
                   >
@@ -191,8 +191,8 @@ function FolderStructure() {
                 size="xs"
                 onClick={() => {
                   setEditPlaceholder(item);
-                  setAddParentKey(parentKey);
-                  setSelectedAddIcon("edit");
+                  setAddOrEditParentKey(parentKey);
+                  setSelectedIcon("edit");
                   onOpen();
                 }}
               >
@@ -233,8 +233,8 @@ function FolderStructure() {
           colorScheme="gray"
           size="xs"
           onClick={() => {
-            setAddParentKey("");
-            setSelectedAddIcon("file");
+            setAddOrEditParentKey("");
+            setSelectedIcon("file");
             onOpen();
           }}
         >
@@ -245,8 +245,8 @@ function FolderStructure() {
           size="xs"
           ml={1}
           onClick={() => {
-            setAddParentKey("");
-            setSelectedAddIcon("folder");
+            setAddOrEditParentKey("");
+            setSelectedIcon("folder");
             onOpen();
           }}
         >
@@ -258,18 +258,18 @@ function FolderStructure() {
           <div key={reRenderKey}>{getStructure(stack, "")}</div>
         ) : null}
       </div>
-      <AddModal
+      <AddOrEditModal
         isOpen={isOpen}
         onClose={onClose}
         header={
-          selectedAddIcon === "file"
+          selectedIcon === "file"
             ? "Add File"
-            : selectedAddIcon === "folder"
+            : selectedIcon === "folder"
             ? "Add Folder"
             : "Edit"
         }
         editPlaceHolder={editPlaceholder}
-        onSubmit={handleAddFolderOrFile}
+        onSubmit={handleAddAndEditFolderOrFile}
       />
     </div>
   );

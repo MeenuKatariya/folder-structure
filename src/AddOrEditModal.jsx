@@ -11,7 +11,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-function AddModal(props) {
+function AddOrEditModal(props) {
   const { header, onSubmit = () => {}, isOpen, onClose, editPlaceHolder = '' } = props;
   const [input, setInput] = useState("");
 
@@ -47,4 +47,4 @@ function AddModal(props) {
   );
 }
 
-export default AddModal;
+export default AddOrEditModal;
